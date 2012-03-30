@@ -16,6 +16,7 @@ import addressbook.gui.StyleConstants;
  * --------------------------------------------------
  *              ContactInformationPanel
  * --------------------------------------------------
+ *  -serialVersionUID: long
  *  #picture: ContactPicturePanel
  *  #name: LabeledTextField
  *  #street: LabeledTextField
@@ -56,6 +57,13 @@ import addressbook.gui.StyleConstants;
  */
 public class ContactInformationPanel extends JPanel implements ComponentListener
 {
+	/**
+	 * Explicitly set class version unique id to prevent serialization errors.
+	 * 
+	 * @since 1.1
+	 */
+	private static final long serialVersionUID = 8706667470302683014L;
+
 	/**
 	 * Stores the picture of the current contact.
 	 * 
@@ -194,8 +202,6 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, StyleConstants.CI_BORDER_COLOR));
 		this.setLayout(null);
 	}
-
-	
 
 	/**
 	 * Resizes all sub-components to fit this panel whenever it is resized.
