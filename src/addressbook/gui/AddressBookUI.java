@@ -7,22 +7,79 @@ import javax.swing.*;
 
 import addressbook.gui.components.*;
 
+/**
+ * Creates a graphical user interface window for the user to interact with
+ * an AddressBook object.
+ * 
+ * @author Kyle Campbell (kjcampbell.317@gmail.com)
+ * @since 1.1
+ */
 public class AddressBookUI extends JFrame
 {
+	/**
+	 * Explicitly set class version unique id to prevent serialization errors.
+	 * 
+	 * @since 1.1
+	 */
+	private static final long serialVersionUID = -8564653696547099726L;
+
+	/**
+	 * Explicitly set the minimum size allowed for the GUI frame.
+	 * 
+	 * @since 1.1
+	 */
 	protected static final Dimension MIN_SIZE = new Dimension(800, 600);
 
+	/**
+	 * A text field for entering a search pattern to filter the contact's list.
+	 * 
+	 * @since 1.1
+	 */
 	protected JTextField search;
 
+	/**
+	 * A contact information panel to display the contents of the currently
+	 * selected contact in the contact's list.
+	 * 
+	 * @since 1.1
+	 */
 	protected ContactInformationPanel contactInfo;
 
+	/**
+	 * A list of (possibly filtered) contacts from the address book.
+	 */
 	protected ContactListPanel contactList;
 
+	/**
+	 * A wrapper panel to hold the contacts list and contact information
+	 * panel using a split pane.
+	 * 
+	 * @since 1.1
+	 */
 	protected JPanel content;
 
+	/**
+	 * A tabbed pane for filtering the contacts list by the first letter of
+	 * contacts' last name.
+	 * 
+	 * @since 1.1
+	 */
 	protected JTabbedPane listings;
 
+	/**
+	 * A tabbed pane to select between viewing a contacts information and
+	 * adding a new contact.
+	 * 
+	 * @since 1.1
+	 */
 	protected JTabbedPane modes;
 
+	// TODO require an AddressBook object to be passed
+	/**
+	 * Sets up a new GUI for the specified AddressBook object.
+	 *
+	 * @since 1.1
+	 */
 	public AddressBookUI()
 	{
 		this.setupContent();
@@ -31,6 +88,12 @@ public class AddressBookUI extends JFrame
 		this.render();
 	}
 
+	/**
+	 * Sets up the content panel by adding a search field to the top, a contact
+	 * list to the left, and a contact information panel to the right.
+	 * 
+	 * @since 1.1
+	 */
 	protected void setupContent()
 	{
 		// create search text field
@@ -54,6 +117,11 @@ public class AddressBookUI extends JFrame
 		content.add(split, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Set's up the listings tabbed pane for filtering the contact list by last name.
+	 * 
+	 * @since 1.1
+	 */
 	protected void setupListings()
 	{
 		listings = new JTabbedPane();
@@ -115,6 +183,12 @@ public class AddressBookUI extends JFrame
 		listings.setToolTipTextAt(26, "Shows contacts in this address book whose last name starts with the letter Z. If the contact does not have a last name, the first name is used.");
 	}
 
+	/**
+	 * Sets up the modes tabbed pane to switch between viewing and adding a
+	 * contact.
+	 * 
+	 * @since 1.1
+	 */
 	protected void setupModes()
 	{
 		modes = new JTabbedPane();
@@ -126,6 +200,11 @@ public class AddressBookUI extends JFrame
 		this.getContentPane().add(modes);
 	}
 
+	/**
+	 * Sets up the GUI frame and renders it to the screen.
+	 * 
+	 * @since 1.1
+	 */
 	protected void render()
 	{
 		this.setTitle("Address Book: Welcome!");
