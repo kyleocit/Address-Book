@@ -2,13 +2,13 @@ package addressbook.gui.components;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import addressbook.gui.StyleConstants;
+import addressbook.gui.purifiers.Purifier;
 
 /**
  * UML Diagram 
@@ -21,6 +21,8 @@ import addressbook.gui.StyleConstants;
  *  #field: JTextField
  * --------------------------------------------------
  *  +LabeledTextField(String)
+ *  +addPurifier(Purifier): void
+ *  +setEditable(boolean): void
  *  +componentResized(ComponentEvent): void
  *  +componentMoved(ComponentEvent): void
  *  +componentShown(ComponentEvent): void
@@ -83,7 +85,6 @@ public class LabeledTextField extends JPanel implements ComponentListener
 		// create and style field with default settings
 		field = new JTextField();
 		field.setBorder(null);
-		//field.setEditable(false);
 		field.setFont(StyleConstants.CI_INPUT_FONT);
 		field.setOpaque(false);
 
@@ -93,6 +94,39 @@ public class LabeledTextField extends JPanel implements ComponentListener
 		this.add(label);
 		this.add(field);
 		this.addComponentListener(this);
+	}
+
+	/**
+	 * Adds a purification filter to the text field. The filter watches the
+	 * text field and filters it removing disallowed characters.
+	 * 
+	 * @param purifier a purifier that implements the key listener interface
+	 * @since 1.1
+	 */
+	public void addPurifier(Purifier purifier)
+	{
+		field.addKeyListener(purifier);
+	}
+
+	/**
+	 * Permits or revokes permission to edit the contents inside of this panels
+	 * input field. If the passed argument is true, then the field will become
+	 * writable. However, if false is passed then the field will become
+	 * read-only.
+	 * 
+	 * @param fieldWritable whether or not the input field is writable
+	 * @since 1.1
+	 */
+	public void setEditable(boolean fieldWritable)
+	{
+		if (fieldWritable)
+		{
+			field.setEditable(true);
+		}
+		else
+		{
+			field.setEditable(false);
+		}
 	}
 
 	/**

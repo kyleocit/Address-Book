@@ -11,8 +11,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import addressbook.filters.ImageFilter;
 import addressbook.gui.StyleConstants;
+import addressbook.gui.filters.ImageFilter;
 
 /**
  * UML Diagram

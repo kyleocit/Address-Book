@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-import addressbook.ABPerson;
+import addressbook.addressbook.Contact;
 import addressbook.gui.StyleConstants;
 
 /**
@@ -54,7 +54,7 @@ public class ContactListPanel extends JPanel implements ComponentListener
 	 * 
 	 * @since 1.1
 	 */
-	protected JList<ABPerson> list;
+	protected JList<Contact> list;
 
 	/**
 	 * Stores the scrollpane for the list component.
@@ -73,7 +73,7 @@ public class ContactListPanel extends JPanel implements ComponentListener
 	public ContactListPanel()
 	{
 		// setup list component
-		list = new JList<ABPerson>();
+		list = new JList<Contact>();
 		list.setBackground(StyleConstants.BACKGROUND_COLOR);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 

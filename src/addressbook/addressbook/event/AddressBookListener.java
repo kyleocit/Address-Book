@@ -1,4 +1,4 @@
-package addressbook;
+package addressbook.addressbook.event;
 /*
  * @(#)AddressBookListener.java	1.0 10/10/21
  *

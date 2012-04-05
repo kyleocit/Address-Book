@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import addressbook.gui.StyleConstants;
+import addressbook.gui.purifiers.Purifier;
 
 /**
  * UML Diagram 
@@ -24,6 +25,7 @@ import addressbook.gui.StyleConstants;
  *  #scrollpane: JScrollPane
  * --------------------------------------------------
  *  +LabeledTextArea(String)
+ *  +addPurifier(Purifier): void
  *  +componentResized(ComponentEvent): void
  *  +componentMoved(ComponentEvent): void
  *  +componentShown(ComponentEvent): void
@@ -110,6 +112,18 @@ public class LabeledTextArea extends JPanel implements ComponentListener
 		this.add(label);
 		this.add(scrollpane);
 		this.addComponentListener(this);
+	}
+
+	/**
+	 * Adds a purification filter to the text area. The filter watches the
+	 * text area and filters it removing disallowed characters.
+	 * 
+	 * @param purifier a purifier that implements the key listener interface
+	 * @since 1.1
+	 */
+	public void addPurifier(Purifier purifier)
+	{
+		field.addKeyListener(purifier);
 	}
 
 	/**

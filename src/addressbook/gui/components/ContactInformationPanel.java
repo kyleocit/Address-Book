@@ -9,37 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import addressbook.gui.StyleConstants;
-
-/**
- * UML Diagram
- *
- * --------------------------------------------------
- *              ContactInformationPanel
- * --------------------------------------------------
- *  -serialVersionUID: long
- *  #picture: ContactPicturePanel
- *  #name: LabeledTextField
- *  #street: LabeledTextField
- *  #city: LabeledTextField
- *  #state: LabeledTextField
- *  #zipcode: LabeledTextField
- *  #homePhone: LabeledTextField
- *  #cellPhone: LabeledTextField
- *  #workPhone: LabeledTextField
- *  #faxNumber: LabeledTextField
- *  #email: LabeledTextField
- *  #cancelButton: JButton
- *  #actionButton: JButton
- *  #notes: LabeledTextArea
- *  #viewMap: JButton
- * --------------------------------------------------
- *  +ContactInformationPanel()
- *  +componentResized(ComponentEvent): void
- *  +componentMoved(ComponentEvent): void
- *  +componentShown(ComponentEvent): void
- *  +componentHidden(ComponentEvent): void
- * --------------------------------------------------
- */
+import addressbook.gui.purifiers.*;
 
 /**
  * Creates a new contact information panel for displaying a contacts
@@ -63,6 +33,13 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 	 * @since 1.1
 	 */
 	private static final long serialVersionUID = 8706667470302683014L;
+
+	/**
+	 * Whether or not this panels input fields can be edited.
+	 * 
+	 * @since 1.1
+	 */
+	protected boolean fieldsWritable;
 
 	/**
 	 * Stores the picture of the current contact.
@@ -138,47 +115,70 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 	 */
 	public ContactInformationPanel()
 	{
+		//---
+		// Reusable Purifiers
+		//---
+		Purifier namePurifier = new NamePurifier();
+		Purifier streetPurifier = new StreetPurifier();
+		Purifier statePurifier = new StatePurifier();
+		Purifier zipcodePurifier = new ZipCodePurifier();
+		Purifier phonePurifier = new PhoneNumberPurifier();
+		Purifier emailPurifier = new EmailAddressPurifier();
+
+		//---
+		// Component's Setup
+		//---
 		picture = new ContactPicturePanel();
 		picture.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, StyleConstants.CI_BORDER_COLOR));
 		this.add(picture);
 
 		name = new LabeledTextField("Name");
+		name.addPurifier(namePurifier);
 		name.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(name);
 
 		street = new LabeledTextField("Street");
+		street.addPurifier(streetPurifier);
 		street.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(street);
 
 		city = new LabeledTextField("City");
+		city.addPurifier(namePurifier);
 		city.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(city);
 
 		state = new LabeledTextField("State");
+		state.addPurifier(statePurifier);
 		state.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(state);
 
 		zipcode = new LabeledTextField("Zip Code");
+		zipcode.addPurifier(zipcodePurifier);
 		zipcode.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(zipcode);
 
 		homePhone = new LabeledTextField("Home Phone");
+		homePhone.addPurifier(phonePurifier);
 		homePhone.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(homePhone);
 
 		cellPhone = new LabeledTextField("Cell Phone");
+		cellPhone.addPurifier(phonePurifier);
 		cellPhone.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(cellPhone);
 
 		workPhone = new LabeledTextField("Work Phone");
+		workPhone.addPurifier(phonePurifier);
 		workPhone.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(workPhone);
 
 		faxNumber = new LabeledTextField("Fax Number");
+		faxNumber.addPurifier(phonePurifier);
 		faxNumber.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(faxNumber);
 
 		email = new LabeledTextField("Email Address");
+		email.addPurifier(emailPurifier);
 		email.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(email);
 
@@ -201,6 +201,57 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 		this.setBackground(StyleConstants.CI_BACKGROUND_COLOR);
 		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, StyleConstants.CI_BORDER_COLOR));
 		this.setLayout(null);
+
+		this.setEditable(true); // read-only by default
+	}
+
+	/**
+	 * Permits or revokes permission to edit the contents inside of this panels
+	 * fields. If the passed argument is true, then all fields will become
+	 * writable and the buttons' text will change to reflect saving or canceling
+	 * changes. However, if false is passed then the fields will all become
+	 * read-only and the buttons' text will change to reflect deleting or
+	 * editing the contact information.
+	 * 
+	 * @param fieldsWritable whether or not the input fields are writable
+	 * @since 1.1
+	 */
+	public void setEditable(boolean fieldsWritable)
+	{
+		this.fieldsWritable = fieldsWritable;
+		
+		if (fieldsWritable)
+		{
+			name.setEditable(true);
+			street.setEditable(true);
+			city.setEditable(true);
+			state.setEditable(true);
+			zipcode.setEditable(true);
+			homePhone.setEditable(true);
+			cellPhone.setEditable(true);
+			workPhone.setEditable(true);
+			faxNumber.setEditable(true);
+			email.setEditable(true);
+			cancelButton.setText("Cancel");
+			actionButton.setText("Save Contact");
+
+			name.requestFocusInWindow();
+		}
+		else
+		{
+			name.setEditable(false);
+			street.setEditable(false);
+			city.setEditable(false);
+			state.setEditable(false);
+			zipcode.setEditable(false);
+			homePhone.setEditable(false);
+			cellPhone.setEditable(false);
+			workPhone.setEditable(false);
+			faxNumber.setEditable(false);
+			email.setEditable(false);
+			cancelButton.setText("Delete Contact");
+			actionButton.setText("Edit Contact");
+		}
 	}
 
 	/**

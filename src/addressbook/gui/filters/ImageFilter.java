@@ -1,25 +1,4 @@
-package addressbook.filters;
-/*
- * @(#)ImageFilter.java	1.0	10/10/25
- * 
- * Written by Kyle Campbell.
- *   
- * UML Diagram
- * --------------------------------------------------
- *                  ImageFilter
- * --------------------------------------------------
- *  -validExtensions: String[]
- * --------------------------------------------------
- *  +accept(File): boolean
- *  +getDescription(): String
- * --------------------------------------------------
- * 
- * Change Log
- * --------------------------------------------------
- *  v1.0
- *   - initial release
- * --------------------------------------------------
- */
+package addressbook.gui.filters;
 
 import java.io.File;
 
@@ -31,13 +10,17 @@ import javax.swing.filechooser.FileFilter;
  * a file extension not listed in validExtensions will be filtered out using the
  * {@link #accept(File)} method.
  * 
+ * @author Kyle Campbell (kjcampbell.317@gmail.com)
  * @see javax.swing.filechooser.FileFilter
+ * @since 1.0
  */
 public class ImageFilter extends FileFilter
 {	
 	/**
 	 * Stores a String array of valid image file extensions. Comparison of image
 	 * extensions is not case sensitive.
+	 * 
+	 * @since 1.0
 	 */
 	private final static String[] validExtensions = {
 		"jpg", "jpeg",
@@ -51,6 +34,7 @@ public class ImageFilter extends FileFilter
 	 * 
 	 * @param f the file to check
 	 * @return true if file is a valid image file; else, false
+	 * @since 1.0
 	 */
 	public boolean accept(File f)
 	{
@@ -75,6 +59,8 @@ public class ImageFilter extends FileFilter
 
 	/**
 	 * Gets the description of this filter.
+	 * 
+	 * @since 1.0
 	 */
 	public String getDescription()
 	{
