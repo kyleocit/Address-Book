@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import addressbook.addressbook.Contact;
 import addressbook.gui.StyleConstants;
 import addressbook.gui.purifiers.*;
 
@@ -40,6 +41,13 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 	 * @since 1.1
 	 */
 	protected boolean fieldsWritable;
+
+	/**
+	 * Stores the contact to display information for.
+	 * 
+	 * @since 1.1
+	 */
+	protected Contact contact;
 
 	/**
 	 * Stores the picture of the current contact.
@@ -206,6 +214,54 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 	}
 
 	/**
+	 * Clears the contact information panel of data and unsets the current
+	 * contact.
+	 * 
+	 * @since 1.1
+	 */
+	public void clear()
+	{
+		name.clear();
+		street.clear();
+		city.clear();
+		state.clear();
+		zipcode.clear();
+		homePhone.clear();
+		cellPhone.clear();
+		workPhone.clear();
+		faxNumber.clear();
+		email.clear();
+		notes.clear();
+	}
+
+	/**
+	 * Checks if the contact information form is writable.
+	 * 
+	 * @return true if it is, else false
+	 * @since 1.1
+	 */
+	public boolean isEditable()
+	{
+		return fieldsWritable;
+	}
+
+	/**
+	 * Sets the current contact to use for displaying contact information.
+	 * <p>
+	 * If the for is in read-only mode it will be updated immediately.
+	 * 
+	 * @param contact contact to display
+	 * @since 1.1
+	 */
+	public void setContact(Contact contact)
+	{
+		this.contact = contact;
+		
+		if (!isEditable())
+			reset();
+	}
+	
+	/**
 	 * Permits or revokes permission to edit the contents inside of this panels
 	 * fields. If the passed argument is true, then all fields will become
 	 * writable and the buttons' text will change to reflect saving or canceling
@@ -252,6 +308,26 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 			cancelButton.setText("Delete Contact");
 			actionButton.setText("Edit Contact");
 		}
+	}
+
+	/**
+	 * Resets the contact information data to the data of the current contact.
+	 * 
+	 * @since 1.1
+	 */
+	public void reset()
+	{
+		name.setText(contact.getName());
+		street.setText(contact.getStreet());
+		city.setText(contact.getCity());
+		state.setText(contact.getState());
+		zipcode.setText(contact.getZipcode());
+		homePhone.setText(contact.getHomePhone());
+		cellPhone.setText(contact.getCellPhone());
+		workPhone.setText(contact.getWorkPhone());
+		faxNumber.setText(contact.getFaxNumber());
+		email.setText(contact.getEmail());
+		notes.setText(contact.getNotes());
 	}
 
 	/**

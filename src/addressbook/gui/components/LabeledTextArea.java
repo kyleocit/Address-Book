@@ -14,26 +14,6 @@ import addressbook.gui.StyleConstants;
 import addressbook.gui.purifiers.Purifier;
 
 /**
- * UML Diagram 
- *
- * --------------------------------------------------
- *                  LabeledTextArea
- * --------------------------------------------------
- *  -serialVersionUID: long
- *  #label: JLabel
- *  #field: JTextArea
- *  #scrollpane: JScrollPane
- * --------------------------------------------------
- *  +LabeledTextArea(String)
- *  +addPurifier(Purifier): void
- *  +componentResized(ComponentEvent): void
- *  +componentMoved(ComponentEvent): void
- *  +componentShown(ComponentEvent): void
- *  +componentHidden(ComponentEvent): void
- * --------------------------------------------------
- */
-
-/**
  * Creates a new labeled text area panel. Despite it's name, this class is
  * not a descendant of JTextArea, but rather a JPanel that places a header
  * label above a JTextArea. Some JTextArea methods have been aliased to
@@ -124,6 +104,48 @@ public class LabeledTextArea extends JPanel implements ComponentListener
 	public void addPurifier(Purifier purifier)
 	{
 		field.addKeyListener(purifier);
+	}
+
+	/**
+	 * Clears the field of data.
+	 * 
+	 * @since 1.1
+	 */
+	public void clear()
+	{
+		field.setText("");
+	}
+	
+	/**
+	 * Permits or revokes permission to edit the contents inside of this panels
+	 * input field. If the passed argument is true, then the field will become
+	 * writable. However, if false is passed then the field will become
+	 * read-only.
+	 * 
+	 * @param fieldWritable whether or not the input field is writable
+	 * @since 1.1
+	 */
+	public void setEditable(boolean fieldWritable)
+	{
+		if (fieldWritable)
+		{
+			field.setEditable(true);
+		}
+		else
+		{
+			field.setEditable(false);
+		}
+	}
+
+	/**
+	 * Sets the field text to the specified sting.
+	 * 
+	 * @param s new input field text
+	 * @since 1.1
+	 */
+	public void setText(String s)
+	{
+		field.setText(s);
 	}
 
 	/**

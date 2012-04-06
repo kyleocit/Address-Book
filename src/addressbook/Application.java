@@ -110,6 +110,10 @@ public class Application
 			{
 				generate();
 			}
+			else if (e.getKeyCode() == KeyEvent.VK_D && e.isShiftDown())
+			{
+				addressBook.clear();
+			}
 		}
 
 		//---

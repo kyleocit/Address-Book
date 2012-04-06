@@ -3,10 +3,14 @@ package addressbook.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
+import java.sql.SQLException;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import addressbook.addressbook.AddressBook;
+import addressbook.addressbook.Listing;
 import addressbook.addressbook.event.AddressBookEvent;
 import addressbook.addressbook.event.AddressBookListener;
 import addressbook.gui.components.*;
@@ -18,7 +22,7 @@ import addressbook.gui.components.*;
  * @author Kyle Campbell (kjcampbell.317@gmail.com)
  * @since 1.1
  */
-public class AddressBookUI extends JFrame implements AddressBookListener
+public class AddressBookUI extends JFrame implements AddressBookListener, ListSelectionListener
 {
 	/**
 	 * Explicitly set class version unique id to prevent serialization errors.
@@ -95,6 +99,7 @@ public class AddressBookUI extends JFrame implements AddressBookListener
 	public AddressBookUI(AddressBook ab)
 	{
 		this.addressBook = ab;
+		addressBook.addAddressBookListener(this);
 		this.setupContent();
 		this.setupListings();
 		this.setupModes();
@@ -114,8 +119,10 @@ public class AddressBookUI extends JFrame implements AddressBookListener
 
 		// create contact list and contact information panels
 		contactList = new ContactListPanel();
+		contactList.addListSelectionListener(this);
 		contactList.setContactsList(addressBook.getListings());
 		contactInfo = new ContactInformationPanel();
+		contactInfo.setEditable(false);
 
 		// create a split pane for resizing the width of the contact
 		// list and contact information panels relative to one another
@@ -271,5 +278,27 @@ public class AddressBookUI extends JFrame implements AddressBookListener
 	@Override public void contactRemoved(AddressBookEvent evt)
 	{
 		contactList.setContactsList(addressBook.getListings());
+	}
+
+	/**
+	 * Updates the contact information panel with the selected listing.
+	 *
+	 *@since 1.1
+	 */
+	@Override public void valueChanged(ListSelectionEvent evt)
+	{
+		Listing current = contactList.getSelectedListing();
+		
+		if (current != null)
+		{
+			try
+			{
+				contactInfo.setContact(addressBook.getById(current.getId()));
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 }

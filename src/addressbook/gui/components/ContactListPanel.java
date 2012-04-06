@@ -9,6 +9,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 
 import addressbook.addressbook.Listing;
 import addressbook.gui.StyleConstants;
@@ -73,6 +74,16 @@ public class ContactListPanel extends JPanel implements ComponentListener
 	}
 
 	/**
+	 * Gets the currently selected listing.
+	 * 
+	 * @return currently selected listing
+	 */
+	public Listing getSelectedListing()
+	{
+		return list.getSelectedValue();
+	}
+
+	/**
 	 * Sets the contact list.
 	 * 
 	 * @since 1.1
@@ -100,4 +111,14 @@ public class ContactListPanel extends JPanel implements ComponentListener
 	@Override public void componentShown(ComponentEvent e) {}
 	@Override public void componentHidden(ComponentEvent e) {}
 	//---
+
+	/**
+	 * Add a listener to get called back when a list item is selected
+	 * 
+	 * @since 1.1
+	 */
+	public void addListSelectionListener(ListSelectionListener l)
+	{
+		list.addListSelectionListener(l);
+	}
 }

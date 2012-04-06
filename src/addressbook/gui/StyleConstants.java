@@ -61,5 +61,5 @@ public class StyleConstants
 	 * 
 	 * @since 1.1
 	 */
-	public static final Font CI_INPUT_FONT = new Font("Times New Roman", Font.PLAIN, 14);
+	public static final Font CI_INPUT_FONT = new Font("Verdana", Font.PLAIN, 14);
 }

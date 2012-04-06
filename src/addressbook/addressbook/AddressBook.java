@@ -120,6 +120,24 @@ public class AddressBook
 	}
 
 	/**
+	 * Clears all entries out of the address book.
+	 * 
+	 * @since 1.1
+	 */
+	public void clear()
+	{
+		try
+		{
+			database.createStatement().executeUpdate("delete from contacts");
+			fireContactRemovedEvent(new AddressBookEvent(this, null));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Gets the contact information of the contact with the specified id
 	 * number.
 	 * 
@@ -129,7 +147,9 @@ public class AddressBook
 	 */
 	public Contact getById(int id) throws SQLException
 	{
-		return new Contact(database.createStatement().executeQuery("select * from contacts where id='" + id + "'"));
+		ResultSet result = database.createStatement().executeQuery("select * from contacts where id=" + id);
+		result.first();
+		return new Contact(result);
 	}
 
 	/**

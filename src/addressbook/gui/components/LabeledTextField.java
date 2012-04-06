@@ -11,26 +11,6 @@ import addressbook.gui.StyleConstants;
 import addressbook.gui.purifiers.Purifier;
 
 /**
- * UML Diagram 
- *
- * --------------------------------------------------
- *                 LabeledTextField
- * --------------------------------------------------
- *  -serialVersionUID: long
- *  #label: JLabel
- *  #field: JTextField
- * --------------------------------------------------
- *  +LabeledTextField(String)
- *  +addPurifier(Purifier): void
- *  +setEditable(boolean): void
- *  +componentResized(ComponentEvent): void
- *  +componentMoved(ComponentEvent): void
- *  +componentShown(ComponentEvent): void
- *  +componentHidden(ComponentEvent): void
- * --------------------------------------------------
- */
-
-/**
  * Creates a new labeled text field panel. Despite it's name, this class is
  * not a descendant of JTextField, but rather a JPanel that overlays a
  * JTextField onto a JLabel. Some JTextField methods have been aliased to
@@ -109,6 +89,16 @@ public class LabeledTextField extends JPanel implements ComponentListener
 	}
 
 	/**
+	 * Clears the field of data.
+	 * 
+	 * @since 1.1
+	 */
+	public void clear()
+	{
+		field.setText("");
+	}
+
+	/**
 	 * Permits or revokes permission to edit the contents inside of this panels
 	 * input field. If the passed argument is true, then the field will become
 	 * writable. However, if false is passed then the field will become
@@ -127,6 +117,17 @@ public class LabeledTextField extends JPanel implements ComponentListener
 		{
 			field.setEditable(false);
 		}
+	}
+
+	/**
+	 * Sets the field text to the specified sting.
+	 * 
+	 * @param s new input field text
+	 * @since 1.1
+	 */
+	public void setText(String s)
+	{
+		field.setText(s);
 	}
 
 	/**
