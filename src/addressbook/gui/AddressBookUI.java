@@ -2,9 +2,13 @@ package addressbook.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
+import addressbook.addressbook.AddressBook;
+import addressbook.addressbook.event.AddressBookEvent;
+import addressbook.addressbook.event.AddressBookListener;
 import addressbook.gui.components.*;
 
 /**
@@ -14,7 +18,7 @@ import addressbook.gui.components.*;
  * @author Kyle Campbell (kjcampbell.317@gmail.com)
  * @since 1.1
  */
-public class AddressBookUI extends JFrame
+public class AddressBookUI extends JFrame implements AddressBookListener
 {
 	/**
 	 * Explicitly set class version unique id to prevent serialization errors.
@@ -29,6 +33,13 @@ public class AddressBookUI extends JFrame
 	 * @since 1.1
 	 */
 	protected static final Dimension MIN_SIZE = new Dimension(800, 600);
+
+	/**
+	 * The address book that this UI allows interaction with.
+	 * 
+	 * @since 1.1
+	 */
+	protected AddressBook addressBook;
 
 	/**
 	 * A text field for entering a search pattern to filter the contact's list.
@@ -78,10 +89,12 @@ public class AddressBookUI extends JFrame
 	/**
 	 * Sets up a new GUI for the specified AddressBook object.
 	 *
+	 * @param ab the address book to use
 	 * @since 1.1
 	 */
-	public AddressBookUI()
+	public AddressBookUI(AddressBook ab)
 	{
+		this.addressBook = ab;
 		this.setupContent();
 		this.setupListings();
 		this.setupModes();
@@ -101,6 +114,7 @@ public class AddressBookUI extends JFrame
 
 		// create contact list and contact information panels
 		contactList = new ContactListPanel();
+		contactList.setContactsList(addressBook.getListings());
 		contactInfo = new ContactInformationPanel();
 
 		// create a split pane for resizing the width of the contact
@@ -214,5 +228,48 @@ public class AddressBookUI extends JFrame
 		this.setPreferredSize(MIN_SIZE);
 		this.pack();
 		this.setLocationRelativeTo(null);
+	}
+
+	/**
+	 * Register key listeners with content panel.
+	 * 
+	 * @since 1.1
+	 */
+	@Override public void addKeyListener(KeyListener l)
+	{
+		content.setFocusable(true);
+		content.requestFocusInWindow();
+		content.addKeyListener(l);
+	}
+
+	/**
+	 * Updates the contact list when a contact is added to the address book.
+	 * 
+	 * @since 1.1
+	 */
+	@Override public void contactAdded(AddressBookEvent evt)
+	{
+		contactList.setContactsList(addressBook.getListings());
+	}
+
+	/**
+	 * Updates the contact list when a contact is updated in the address book.
+	 * 
+	 * @since 1.1
+	 */
+	@Override public void contactModified(AddressBookEvent evt)
+	{
+		contactList.setContactsList(addressBook.getListings());
+	}
+
+	/**
+	 * Updates the contact list when a contact is removed from the address
+	 * book.
+	 * 
+	 * @since 1.1
+	 */
+	@Override public void contactRemoved(AddressBookEvent evt)
+	{
+		contactList.setContactsList(addressBook.getListings());
 	}
 }

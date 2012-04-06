@@ -3,32 +3,16 @@ package addressbook.gui.components;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.Vector;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-import addressbook.addressbook.Contact;
+import addressbook.addressbook.Listing;
 import addressbook.gui.StyleConstants;
 
-/**
- * UML Diagram
- *
- * --------------------------------------------------
- *                 ContactListPanel
- * --------------------------------------------------
- *  -serialVersionUID: long
- *  #list: JList
- *  #scrollpane: JScrollPane
- * --------------------------------------------------
- *  +ContactListPanel()
- *  +componentResized(ComponentEvent): void
- *  +componentMoved(ComponentEvent): void
- *  +componentShown(ComponentEvent): void
- *  +componentHidden(ComponentEvent): void
- * --------------------------------------------------
- */
 
 /**
  * Creates a new contact list panel for displaying a list of contacts
@@ -54,7 +38,7 @@ public class ContactListPanel extends JPanel implements ComponentListener
 	 * 
 	 * @since 1.1
 	 */
-	protected JList<Contact> list;
+	protected JList<Listing> list;
 
 	/**
 	 * Stores the scrollpane for the list component.
@@ -73,7 +57,7 @@ public class ContactListPanel extends JPanel implements ComponentListener
 	public ContactListPanel()
 	{
 		// setup list component
-		list = new JList<Contact>();
+		list = new JList<Listing>();
 		list.setBackground(StyleConstants.BACKGROUND_COLOR);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -86,6 +70,16 @@ public class ContactListPanel extends JPanel implements ComponentListener
 		this.add(scrollpane);
 		this.addComponentListener(this);
 		this.setLayout(null);
+	}
+
+	/**
+	 * Sets the contact list.
+	 * 
+	 * @since 1.1
+	 */
+	public void setContactsList(Vector<Listing> vector)
+	{
+		list.setListData(vector);
 	}
 
 	/**

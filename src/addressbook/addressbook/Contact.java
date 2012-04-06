@@ -1,189 +1,343 @@
 package addressbook.addressbook;
 
-public class Contact implements Comparable<Contact>
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * Stores contact information for one person, business or entity.
+ * 
+ * @author Kyle Campbell (kjcampbell.317@gmail.com)
+ * @since 1.1
+ */
+public class Contact extends Listing
 {
-	protected int uid;
-	
+	/**
+	 * Stores the contact's full name.
+	 * 
+	 * @since 1.1
+	 */
 	protected String name;
-	
+
+	/**
+	 * Stores the contact's address.
+	 * 
+	 * @since 1.1
+	 */
 	protected String street, city, state, zipcode;
-	
+
+	/**
+	 * Stores the contact's phone and fax numbers.
+	 * 
+	 * @since 1.1
+	 */
 	protected String homePhone, cellPhone, workPhone, faxNumber;
 	
+	/**
+	 * Stores the contact's email address.
+	 * 
+	 * @since 1.1
+	 */
 	protected String email;
+	
+	/**
+	 * Stores the user's contact-related notes.
+	 * 
+	 * @since 1.1
+	 */
+	protected String notes;
 
+	/**
+	 * Creates a new contact to store a person, business, or entities
+	 * contact information.
+	 * 
+	 * @since 1.1
+	 */
 	public Contact()
 	{
-		
+		name = "";
+		street = "";
+		city = "";
+		state = "";
+		zipcode = "";
+		homePhone = "";
+		cellPhone =	"";
+		workPhone = "";
+		faxNumber =	"";
+		email = "";
+		notes = "";
 	}
-	
-	public int compareTo(Contact c)
+
+	/**
+	 * Creates a new contact to store a person, business, or entities
+	 * contact information from a row in the address book's database.
+	 * <p>
+	 * This constructor should ONLY be used by the address book!
+	 * 
+	 * @param dbrs the contact's information fresh from the database
+	 * @throws SQLException thrown when column label or requested type is invalid
+	 * @since 1.1
+	 */
+	public Contact(ResultSet dbrs) throws SQLException
 	{
-		return getFormattedName().compareTo(c.getFormattedName());
-	}
-
-	/**
-	 * @return the uid
-	 */
-	public int getUid() {
-		return uid;
-	}
-
-	/**
-	 * @param uid the uid to set
-	 */
-	public void setUid(int uid) {
-		this.uid = uid;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+		super(dbrs);
+		name = dbrs.getString("name");
+		street = dbrs.getString("street");
+		city = dbrs.getString("city");
+		state = dbrs.getString("state");
+		zipcode = dbrs.getString("zipcode");
+		homePhone = dbrs.getString("homePhone");
+		cellPhone =	dbrs.getString("cellPhone");
+		workPhone = dbrs.getString("workPhone");
+		faxNumber =	dbrs.getString("faxNumber");
+		email = dbrs.getString("email");
+		notes = dbrs.getString("notes");
 	}
 	
-	public String getFormattedName() {
-		// get rid of excess whitespace
-		String name = this.name.trim().replaceAll("  ", " ");
-		
-		// move the last name to the front with a comma after it
-		if (name.contains(" "))
-			name = name.substring(name.lastIndexOf(" ")) + ", " + name.substring(0, name.lastIndexOf(" "));
-
+	/**
+	 * Gets this contact's name.
+	 * 
+	 * @return the current name
+	 * @since 1.1
+	 */
+	public String getName()
+	{
 		return name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * Sets this contact's name to the specified string.
+	 * 
+	 * @param name new name
+	 * @since 1.1
 	 */
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
+		
+		// set listing: Lastname, Firstname Middlename...
+		listing = name.trim().replaceAll("  ", " ");
+		
+		if (listing.contains(" "))
+			listing = listing.substring(listing.lastIndexOf(" ") + 1) + ", " + listing.substring(0, listing.lastIndexOf(" "));
 	}
 
 	/**
-	 * @return the street
+	 * Gets this contact's street address.
+	 * 
+	 * @return current street address
+	 * @since 1.1
 	 */
-	public String getStreet() {
+	public String getStreet()
+	{
 		return street;
 	}
 
 	/**
-	 * @param street the street to set
+	 * Sets this contact's street address to the specified string.
+	 * 
+	 * @param street new street address
+	 * @since 1.1
 	 */
-	public void setStreet(String street) {
+	public void setStreet(String street)
+	{
 		this.street = street;
 	}
 
 	/**
-	 * @return the city
+	 * Gets this contact's city address.
+	 * 
+	 * @return current city address
+	 * @since 1.1
 	 */
-	public String getCity() {
+	public String getCity()
+	{
 		return city;
 	}
 
 	/**
-	 * @param city the city to set
+	 * Sets this contact's city address to the specified string.
+	 * 
+	 * @param city new city address
+	 * @since 1.1
 	 */
-	public void setCity(String city) {
+	public void setCity(String city)
+	{
 		this.city = city;
 	}
 
 	/**
-	 * @return the state
+	 * Gets this contact's state address.
+	 * 
+	 * @return current state address
+	 * @since 1.1
 	 */
-	public String getState() {
+	public String getState()
+	{
 		return state;
 	}
 
 	/**
-	 * @param state the state to set
+	 * Sets this current state address to the specified string.
+	 * 
+	 * @param state new state address
+	 * @since 1.1
 	 */
-	public void setState(String state) {
+	public void setState(String state)
+	{
 		this.state = state;
 	}
 
 	/**
-	 * @return the zipcode
+	 * Gets this contact's ZIP code address.
+	 * 
+	 * @return current zip code address
+	 * @since 1.1
 	 */
-	public String getZipcode() {
+	public String getZipcode()
+	{
 		return zipcode;
 	}
 
 	/**
-	 * @param zipcode the zipcode to set
+	 * Sets this contact's ZIP code to the specified string.
+	 * 
+	 * @param zipcode new ZIP code address
+	 * @since 1.1
 	 */
-	public void setZipcode(String zipcode) {
+	public void setZipcode(String zipcode)
+	{
 		this.zipcode = zipcode;
 	}
 
 	/**
-	 * @return the homePhone
+	 * Gets this contact's home phone number.
+	 * 
+	 * @return current home phone number
+	 * @since 1.1
 	 */
-	public String getHomePhone() {
+	public String getHomePhone()
+	{
 		return homePhone;
 	}
 
 	/**
-	 * @param homePhone the homePhone to set
+	 * Sets this contact's home phone number to the specified string.
+	 * 
+	 * @param homePhone new home phone number
+	 * @since 1.1
 	 */
-	public void setHomePhone(String homePhone) {
+	public void setHomePhone(String homePhone)
+	{
 		this.homePhone = homePhone;
 	}
 
 	/**
-	 * @return the cellPhone
+	 * Gets this contact's cell phone number.
+	 * 
+	 * @return current cell phone number
+	 * @since 1.1
 	 */
-	public String getCellPhone() {
+	public String getCellPhone()
+	{
 		return cellPhone;
 	}
 
 	/**
-	 * @param cellPhone the cellPhone to set
+	 * Sets this contact's cell phone number to the specified string.
+	 * 
+	 * @param cellPhone new cell phone number
+	 * @since 1.1
 	 */
-	public void setCellPhone(String cellPhone) {
+	public void setCellPhone(String cellPhone)
+	{
 		this.cellPhone = cellPhone;
 	}
 
 	/**
-	 * @return the workPhone
+	 * Gets this contact's work phone number.
+	 * 
+	 * @return current work phone number
+	 * @since 1.1
 	 */
-	public String getWorkPhone() {
+	public String getWorkPhone()
+	{
 		return workPhone;
 	}
 
 	/**
-	 * @param workPhone the workPhone to set
+	 * Sets this contact's work phone number to the specified string.
+	 * 
+	 * @param workPhone new work phone number
+	 * @since 1.1
 	 */
-	public void setWorkPhone(String workPhone) {
+	public void setWorkPhone(String workPhone)
+	{
 		this.workPhone = workPhone;
 	}
 
 	/**
-	 * @return the faxNumber
+	 * Gets this contact's fax number.
+	 * 
+	 * @return current fax number
+	 * @since 1.1
 	 */
-	public String getFaxNumber() {
+	public String getFaxNumber()
+	{
 		return faxNumber;
 	}
 
 	/**
-	 * @param faxNumber the faxNumber to set
+	 * Sets this contact's fax number to the specified string.
+	 * 
+	 * @param faxNumber new fax number
+	 * @since 1.1
 	 */
-	public void setFaxNumber(String faxNumber) {
+	public void setFaxNumber(String faxNumber)
+	{
 		this.faxNumber = faxNumber;
 	}
 
 	/**
-	 * @return the email
+	 * Gets this contact's email address.
+	 * 
+	 * @return current email address
+	 * @since 1.1
 	 */
-	public String getEmail() {
+	public String getEmail()
+	{
 		return email;
 	}
 
 	/**
-	 * @param email the email to set
+	 * Sets this contact's email address to the specified string.
+	 * 
+	 * @param email new email address
+	 * @since 1.1
 	 */
-	public void setEmail(String email) {
+	public void setEmail(String email)
+	{
 		this.email = email;
+	}
+
+	/**
+	 * Gets this contact's notes.
+	 * 
+	 * @return current contact notes
+	 * @since 1.1
+	 */
+	public String getNotes()
+	{
+		return notes;
+	}
+
+	/**
+	 * Sets this contact's notes to the specified string.
+	 * 
+	 * @param notes new contact notes
+	 * @since 1.1
+	 */
+	public void setNotes(String notes)
+	{
+		this.notes = notes;
 	}
 }
