@@ -122,7 +122,7 @@ public class AddressBookUI extends JFrame implements AddressBookListener, ListSe
 		contactList.addListSelectionListener(this);
 		contactList.setContactsList(addressBook.getListings());
 		contactInfo = new ContactInformationPanel();
-		contactInfo.setEditable(false);
+		//contactInfo.setEditable(false);
 
 		// create a split pane for resizing the width of the contact
 		// list and contact information panels relative to one another

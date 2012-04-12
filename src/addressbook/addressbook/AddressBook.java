@@ -2,6 +2,7 @@ package addressbook.addressbook;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -154,6 +155,8 @@ public class AddressBook
 
 	/**
 	 * Gets a managed array of listings for all the contacts in the database.
+	 * 
+	 * @since 1.1
 	 */
 	public Vector<Listing> getListings()
 	{
@@ -165,6 +168,72 @@ public class AddressBook
 			try
 			{
 				ResultSet result = database.createStatement().executeQuery("select id, listing from contacts order by listing");
+				while (result.next())
+				{
+					v.add(new Listing(result));
+				}
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		// return vector
+		return v;
+	}
+
+	/**
+	 * Gets a managed array of listings for all the contacts in the database
+	 * whose listing name contains the passed string.
+	 * 
+	 * @since 1.1
+	 */
+	public Vector<Listing> getListingsContaining(String s)
+	{
+		Vector<Listing> v = new Vector<Listing>();
+		
+		// attempt to populate vector
+		if (isAvailable())
+		{
+			try
+			{
+				PreparedStatement st = database.prepareStatement("select id, listing from contacts like '%?%'order by listing");
+				st.setString(1, s);
+				ResultSet result = st.executeQuery();
+				while (result.next())
+				{
+					v.add(new Listing(result));
+				}
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		// return vector
+		return v;
+	}
+
+	/**
+	 * Gets a managed array of listings for all the contacts in the database
+	 * whose listing name starts with the passed string.
+	 * 
+	 * @since 1.1
+	 */
+	public Vector<Listing> getListingsStartingWith(String s)
+	{
+		Vector<Listing> v = new Vector<Listing>();
+		
+		// attempt to populate vector
+		if (isAvailable())
+		{
+			try
+			{
+				PreparedStatement st = database.prepareStatement("select id, listing from contacts like '?%'order by listing");
+				st.setString(1, s);
+				ResultSet result = st.executeQuery();
 				while (result.next())
 				{
 					v.add(new Listing(result));

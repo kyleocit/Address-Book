@@ -1,11 +1,14 @@
 package addressbook.gui.components;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import addressbook.addressbook.Contact;
@@ -26,7 +29,7 @@ import addressbook.gui.purifiers.*;
  * @author Kyle Campbell (kjcampbell.317@gmail.com)
  * @since 1.1
  */
-public class ContactInformationPanel extends JPanel implements ComponentListener
+public class ContactInformationPanel extends JPanel implements ComponentListener, ActionListener
 {
 	/**
 	 * Explicitly set class version unique id to prevent serialization errors.
@@ -191,10 +194,12 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 		this.add(email);
 
 		cancelButton = new JButton("Delete Contact");
+		cancelButton.addActionListener(this);
 		cancelButton.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, StyleConstants.CI_BORDER_COLOR));
 		this.add(cancelButton);
 
 		actionButton = new JButton("Edit Contact");
+		actionButton.addActionListener(this);
 		actionButton.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(actionButton);
 
@@ -202,6 +207,7 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 		this.add(notes);
 
 		viewMap = new JButton("View Map");
+		viewMap.addActionListener(this);
 		viewMap.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, StyleConstants.CI_BORDER_COLOR));
 		this.add(viewMap);
 
@@ -210,7 +216,7 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 		this.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, StyleConstants.CI_BORDER_COLOR));
 		this.setLayout(null);
 
-		this.setEditable(true); // read-only by default
+		this.setEditable(false); // read-only by default
 	}
 
 	/**
@@ -362,4 +368,17 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 	@Override public void componentShown(ComponentEvent e) {}
 	@Override public void componentHidden(ComponentEvent e) {}
 	//---
+
+	@Override public void actionPerformed(ActionEvent e)
+	{
+		System.out.println("action performed");
+		if (e.getSource() == cancelButton)
+		{
+			if (fieldsWritable && JOptionPane.showConfirmDialog(this, "Are you sure you wish to cancel without saving this contact?", "Cancel operation...", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+			{
+				this.reset();
+				this.requestFocus();
+			}
+		}
+	}
 }
