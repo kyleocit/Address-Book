@@ -12,6 +12,13 @@ import java.sql.SQLException;
 public class Contact extends Listing
 {
 	/**
+	 * A constant flagging that no id has been set.
+	 * 
+	 * @since 1.1
+	 */
+	public static int NO_ID = -1;
+
+	/**
 	 * Stores the contact's full name.
 	 * 
 	 * @since 1.1
@@ -54,6 +61,7 @@ public class Contact extends Listing
 	 */
 	public Contact()
 	{
+		id = NO_ID;
 		name = "";
 		street = "";
 		city = "";
@@ -80,6 +88,7 @@ public class Contact extends Listing
 	public Contact(ResultSet dbrs) throws SQLException
 	{
 		super(dbrs);
+		id = dbrs.getInt("id");
 		name = dbrs.getString("name");
 		street = dbrs.getString("street");
 		city = dbrs.getString("city");

@@ -89,36 +89,6 @@ public class AddressBook
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Adds a new contact to the address book.
-	 * <p>
-	 * Adds the contact to the address book database, then to the list itself.
-	 * 
-	 * @param c the contact to add
-	 * @return true if successful else false
-	 * @since 1.1
-	 */
-	public boolean add(Contact c)
-	{
-		// if the database isn't available then this operation fails
-		if (!isAvailable())
-			return false;
-
-		// attempt to add the contact to the database
-		try
-		{
-			database.createStatement().execute("insert into contacts (listing, name, street, city, state, zipcode, homePhone, cellPhone, workPhone, faxNumber, email, notes)"
-					+ " values ('" + c.toString() + "', '" + c.getName() + "', '" + c.getStreet() + "', '" + c.getCity() + "', '" + c.getState() + "', '" + c.getZipcode() + "', '" + c.getHomePhone() + "', '" + c.getCellPhone() + "', '" + c.getWorkPhone() + "', '" + c.getFaxNumber() +"', '" + c.getEmail() + "', '" + c.getNotes() + "')");
-			fireContactAddedEvent(new AddressBookEvent(this, c));
-			return true; // successfully added
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			return false; // add failed
-		}
-	}
 
 	/**
 	 * Clears all entries out of the address book.
@@ -146,11 +116,19 @@ public class AddressBook
 	 * @return the contact's information
 	 * @throws SQLException thrown when the id number is invalid
 	 */
-	public Contact getById(int id) throws SQLException
+	public Contact getById(int id)
 	{
-		ResultSet result = database.createStatement().executeQuery("select * from contacts where id=" + id);
-		result.first();
-		return new Contact(result);
+		try
+		{
+			ResultSet result = database.createStatement().executeQuery("select * from contacts where id=" + id);
+			result.first();
+			return new Contact(result);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -191,25 +169,13 @@ public class AddressBook
 	 */
 	public Vector<Listing> getListingsContaining(String s)
 	{
-		Vector<Listing> v = new Vector<Listing>();
+	Vector<Listing> v = new Vector<Listing>();
 		
-		// attempt to populate vector
-		if (isAvailable())
+		// remove listings that don't start with the passed string
+		for (Listing l : getListings())
 		{
-			try
-			{
-				PreparedStatement st = database.prepareStatement("select id, listing from contacts like '%?%'order by listing");
-				st.setString(1, s);
-				ResultSet result = st.executeQuery();
-				while (result.next())
-				{
-					v.add(new Listing(result));
-				}
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
+			if (l.toString().contains(s))
+				v.add(l);
 		}
 		
 		// return vector
@@ -226,17 +192,48 @@ public class AddressBook
 	{
 		Vector<Listing> v = new Vector<Listing>();
 		
-		// attempt to populate vector
-		if (isAvailable())
+		// remove listings that don't start with the passed string
+		for (Listing l : getListings())
 		{
+			if (l.toString().startsWith(s))
+				v.add(l);
+		}
+		
+		// return vector
+		return v;
+	}
+
+	/**
+	 * Saves the passed contact to the address book's database.
+	 * <p>
+	 * If the contact has set an id number and a contact with the same id
+	 * number already exists within the database, the passed contact will
+	 * overwrite the information of the currently existing contact (in the
+	 * database). If the id doesn't match an existing contact, or if no id has
+	 * been set, then the passed contact will be added to the database.
+	 * 
+	 * @param c the contact to save
+	 * @return true if successful else false
+	 * @since 1.1
+	 */
+	public boolean save(Contact c)
+	{
+		// if the database isn't available then this operation fails
+		if (!isAvailable())
+			return false;
+
+		// are we updating a contacts information or adding a new one?
+		if (c.id != Contact.NO_ID)
+		{
+			// does a contact with that id already exists?
 			try
 			{
-				PreparedStatement st = database.prepareStatement("select id, listing from contacts like '?%'order by listing");
-				st.setString(1, s);
-				ResultSet result = st.executeQuery();
-				while (result.next())
+				ResultSet rs = database.createStatement().executeQuery("select id from contacts where id=" + c.getId());
+				
+				// if so delete them so the passed contact can be added
+				if (rs.first())
 				{
-					v.add(new Listing(result));
+					database.createStatement().executeQuery("delete from contacts where id=" + c.getId());
 				}
 			}
 			catch (SQLException e)
@@ -244,9 +241,32 @@ public class AddressBook
 				e.printStackTrace();
 			}
 		}
-		
-		// return vector
-		return v;
+
+		// attempt to add the contact to the database
+		try
+		{
+			PreparedStatement st = database.prepareStatement("insert into contacts (listing, name, street, city, state, zipcode, homePhone, cellPhone, workPhone, faxNumber, email, notes) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			st.setString(1, c.toString());
+			st.setString(2, c.getName());
+			st.setString(3, c.getStreet());
+			st.setString(4, c.getCity());
+			st.setString(5, c.getState());
+			st.setString(6, c.getZipcode());
+			st.setString(7, c.getHomePhone());
+			st.setString(8, c.getCellPhone());
+			st.setString(9, c.getWorkPhone());
+			st.setString(10, c.getFaxNumber());
+			st.setString(11, c.getEmail());
+			st.setString(12, c.getNotes());
+			st.execute();
+			fireContactAddedEvent(new AddressBookEvent(this, c));
+			return true; // successfully added
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false; // add failed
+		}
 	}
 
 	/**

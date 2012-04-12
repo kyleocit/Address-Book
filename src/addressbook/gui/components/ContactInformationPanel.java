@@ -261,6 +261,10 @@ public class ContactInformationPanel extends JPanel implements ComponentListener
 	 */
 	public void setContact(Contact contact)
 	{
+		// if no contact then return
+		if (contact == null)
+			return;
+
 		this.contact = contact;
 		
 		if (!isEditable())

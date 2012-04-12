@@ -3,13 +3,14 @@ package addressbook.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
-import java.sql.SQLException;
-
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import addressbook.addressbook.AddressBook;
+import addressbook.addressbook.Contact;
 import addressbook.addressbook.Listing;
 import addressbook.addressbook.event.AddressBookEvent;
 import addressbook.addressbook.event.AddressBookListener;
@@ -22,7 +23,7 @@ import addressbook.gui.components.*;
  * @author Kyle Campbell (kjcampbell.317@gmail.com)
  * @since 1.1
  */
-public class AddressBookUI extends JFrame implements AddressBookListener, ListSelectionListener
+public class AddressBookUI extends JFrame implements AddressBookListener, ChangeListener, ListSelectionListener
 {
 	/**
 	 * Explicitly set class version unique id to prevent serialization errors.
@@ -89,7 +90,6 @@ public class AddressBookUI extends JFrame implements AddressBookListener, ListSe
 	 */
 	protected JTabbedPane modes;
 
-	// TODO require an AddressBook object to be passed
 	/**
 	 * Sets up a new GUI for the specified AddressBook object.
 	 *
@@ -202,6 +202,7 @@ public class AddressBookUI extends JFrame implements AddressBookListener, ListSe
 		listings.setToolTipTextAt(25, "Shows contacts in this address book whose last name starts with the letter Y. If the contact does not have a last name, the first name is used.");
 		listings.addTab("Z", null);
 		listings.setToolTipTextAt(26, "Shows contacts in this address book whose last name starts with the letter Z. If the contact does not have a last name, the first name is used.");
+		listings.addChangeListener(this);
 	}
 
 	/**
@@ -218,6 +219,7 @@ public class AddressBookUI extends JFrame implements AddressBookListener, ListSe
 		modes.setToolTipTextAt(0, "View the selected contacts information.");
 		modes.addTab("+", null);
 		modes.setToolTipTextAt(1, "Add a new contact.");
+		modes.addChangeListener(this);
 		this.getContentPane().add(modes);
 	}
 
@@ -281,6 +283,54 @@ public class AddressBookUI extends JFrame implements AddressBookListener, ListSe
 	}
 
 	/**
+	 * Handles changing letter and mode tabs.
+	 */
+	public void stateChanged(ChangeEvent evt)
+	{
+		// When mode is changed...
+		if (evt.getSource() == modes)
+		{
+			// if VIEW_MODE tab is selected....
+			if (modes.getSelectedIndex() == 0 && contactInfo.isEditable())
+			{
+				if (JOptionPane.showConfirmDialog(this, "Are you sure you wish to cancel without saving this contact?", "Cancel operation...", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+				{
+					if (contactList.getSelectedListing() != null)
+						contactInfo.setContact(addressBook.getById(contactList.getSelectedListing().getId()));
+					else
+						contactInfo.clear();
+					contactInfo.setEditable(false);
+					contactList.setEnabled(true);
+				}
+			}
+			// if ADD_MODE tab is selected...
+			else
+			{
+				if (!contactInfo.isEditable())
+				{
+					contactList.setEnabled(false);
+					contactInfo.setContact(new Contact());
+					contactInfo.setEditable(true);
+				}
+			}
+		}
+		// When letter tab is changed...
+		else
+		{
+			// if all is selected, then show all names after search filter is applied
+			// otherwise, show only contacts whose listing name starts with the chosen letter
+			switch (listings.getSelectedIndex())
+			{
+			case 0:
+				contactList.setContactsList(addressBook.getListings());
+				break;
+			default:
+				contactList.setContactsList(addressBook.getListingsStartingWith(listings.getTitleAt(listings.getSelectedIndex())));
+			}
+		}
+	}
+
+	/**
 	 * Updates the contact information panel with the selected listing.
 	 *
 	 *@since 1.1
@@ -291,14 +341,7 @@ public class AddressBookUI extends JFrame implements AddressBookListener, ListSe
 		
 		if (current != null)
 		{
-			try
-			{
-				contactInfo.setContact(addressBook.getById(current.getId()));
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
+			contactInfo.setContact(addressBook.getById(current.getId()));
 		}
 	}
 }

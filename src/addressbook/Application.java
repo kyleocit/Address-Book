@@ -93,7 +93,7 @@ public class Application
 				contact.setWorkPhone("(" + (rand.nextInt(900) + 100) + ") " + (rand.nextInt(900) + 100) + " - " + (rand.nextInt(9000) + 1000));
 				contact.setFaxNumber("(" + (rand.nextInt(900) + 100) + ") " + (rand.nextInt(900) + 100) + " - " + (rand.nextInt(9000) + 1000));
 				contact.setEmail(emailPrefix[rand.nextInt(emailPrefix.length)] + "@" + emailSite[rand.nextInt(emailSite.length)] + "." + emailSuffix[rand.nextInt(emailSuffix.length)]);
-				addressBook.add(contact);
+				addressBook.save(contact);
 			}
 		}
 	
